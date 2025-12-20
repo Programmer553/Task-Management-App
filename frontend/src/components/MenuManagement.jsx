@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-const API = "http://localhost:5000/api";
+const API = "https://task-management-app-backend-m5rk.onrender.com/api";
 
 import FoodImage from "../assets/food.svg";
 import AllImage from "../assets/All.svg";
