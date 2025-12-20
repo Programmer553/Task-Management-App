@@ -39,7 +39,7 @@ const Orders = () => {
   ========================= */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/categories")
+      .get("https://task-management-app-backend-m5rk.onrender.com/categories")
       .then((res) => {
         setCategories(res.data);
 
@@ -52,7 +52,7 @@ const Orders = () => {
 
           // fetch chicken menu items by default
           axios
-            .get(`http://localhost:5000/menu-items/${chickenCategory.id}`)
+            .get(`https://task-management-app-backend-m5rk.onrender.com/menu-items/${chickenCategory.id}`)
             .then((menuRes) => setMenuItems(menuRes.data))
             .catch(console.error);
         }
@@ -67,7 +67,7 @@ const Orders = () => {
     setSelectedCategory(category.id);
 
     axios
-      .get(`http://localhost:5000/menu-items/${category.id}`)
+      .get(`https://task-management-app-backend-m5rk.onrender.com/menu-items/${category.id}`)
       .then((res) => setMenuItems(res.data))
       .catch(console.error);
   };
@@ -129,7 +129,7 @@ const Orders = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/orders", orderPayload, {
+      await axios.post("https://task-management-app-backend-m5rk.onrender.com/orders", orderPayload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
