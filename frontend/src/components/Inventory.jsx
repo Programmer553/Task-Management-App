@@ -4,7 +4,7 @@ import InventoryTable from "../components/InventoryTable";
 import AddInventoryModal from "../components/AddInventoryModal";
 import ChickenImg from "../assets/Rectangle.png";
 
-const API = "http://localhost:5000/inventory";
+const API = "https://task-management-app-backend-m5rk.onrender.com/inventory";
 
 export default function Inventory() {
   const [products, setProducts] = useState([]);
