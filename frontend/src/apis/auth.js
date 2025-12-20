@@ -2,7 +2,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://task-management-app-backend-m5rk.onrender.com",
 });
 
 API.interceptors.request.use((req) => {
