@@ -22,7 +22,7 @@ const OrdersPart = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/profile", {
+      .get("https://task-management-app-backend-m5rk.onrender.com/profile", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -36,7 +36,7 @@ const OrdersPart = () => {
   }, []);
   const handleDeleteOrder = async (orderId) => {
     try {
-      await axios.delete(`http://localhost:5000/orders/${orderId}`, {
+      await axios.delete(`https://task-management-app-backend-m5rk.onrender.com/orders/${orderId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -62,7 +62,7 @@ const OrdersPart = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/orders", {
+      .get("https://task-management-app-backend-m5rk.onrender.com/orders", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
