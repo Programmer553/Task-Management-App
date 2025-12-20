@@ -19,9 +19,6 @@ app.use(
 
 app.use(express.json());
 
-/* =========================
-   AUTH ROUTES
-========================= */
 app.get("/api/staff", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM staff ORDER BY id DESC");
@@ -266,7 +263,6 @@ app.get("/api/menu-items", async (req, res) => {
   }
 });
 
-/* CREATE menu item */
 app.post("/api/menu-items", async (req, res) => {
   try {
     const {
@@ -306,7 +302,6 @@ app.post("/api/menu-items", async (req, res) => {
   }
 });
 
-/* UPDATE menu item */
 app.put("/api/menu-items/:id", async (req, res) => {
   try {
     const { product, desc, stock, price, availability } = req.body;
@@ -408,10 +403,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-/* =========================
-   MIDDLEWARE
-========================= */
-
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -438,13 +429,6 @@ const authorizeRole = (roles) => {
   };
 };
 
-/* =========================
-   CATEGORY & MENU ROUTES
-========================= */
-
-/**
- * GET ALL CATEGORIES
- */
 app.get("/categories", async (req, res) => {
   try {
     const result = await pool.query(
@@ -460,9 +444,6 @@ app.get("/categories", async (req, res) => {
   }
 });
 
-/**
- * GET MENU ITEMS BY CATEGORY ID
- */
 app.get("/menu-items/:categoryId", async (req, res) => {
   const { categoryId } = req.params;
 
@@ -605,12 +586,10 @@ app.get("/dashboard", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch dashboard data" });
   }
 });
-//Inventory
 app.get("/inventory", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM inventory ORDER BY id DESC");
 
-    // format stock like frontend expects
     const data = result.rows.map((item) => ({
       ...item,
       stock: `${item.quantity} In Stock`,
@@ -623,7 +602,6 @@ app.get("/inventory", async (req, res) => {
   }
 });
 
-/* ADD INVENTORY */
 app.post("/inventory", async (req, res) => {
   const { name, category, price, quantity, status, perishable, image } =
     req.body;
@@ -667,7 +645,6 @@ app.put("/inventory/:id", async (req, res) => {
   }
 });
 
-/* DELETE INVENTORY */
 app.delete("/inventory/:id", async (req, res) => {
   try {
     await pool.query("DELETE FROM inventory WHERE id=$1", [req.params.id]);
@@ -678,18 +655,12 @@ app.delete("/inventory/:id", async (req, res) => {
   }
 });
 
-/* =========================
-   SERVER START
-========================= */
-/* DELETE ORDER */
 app.delete("/orders/:id", authenticate, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // delete order items first (FK safety)
     await pool.query("DELETE FROM order_items WHERE order_id = $1", [id]);
 
-    // delete order
     const result = await pool.query(
       "DELETE FROM orders WHERE id = $1 RETURNING id",
       [id]
