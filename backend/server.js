@@ -676,6 +676,52 @@ app.delete("/orders/:id", authenticate, async (req, res) => {
     res.status(500).json({ message: "Failed to delete order" });
   }
 });
+
+app.get("/profile", authenticate, async(req, res)=>{
+    try{
+        const result=await pool.query("SELECT id, name, email, role FROM users WHERE id = $1", [req.user.id]);
+        if (result.rows.length===0){
+            return res.status(404).json({message: "User not found"});
+        }
+        res.json(result.rows[0]);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message: "Failed to fetch profile"});
+    }
+});
+
+app.put("/profile", authenticate, async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    await pool.query("UPDATE users SET name = $1, email = $2 WHERE id = $3",
+      [name, email, req.user.id]
+    );
+
+    res.json({ message: "Profile updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+});
+app.put("/profile/password", authenticate, async (req, res) => {
+  const { password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await pool.query(
+      "UPDATE users SET password_hash = $1 WHERE id = $2",
+      [hashedPassword, req.user.id]
+    );
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update password" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server Started at ${PORT}`);
 });
