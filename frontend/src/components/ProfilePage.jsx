@@ -221,30 +221,31 @@ function AddUserCard({ onAdd }) {
   );
 }
 function ProfileInfo() {
-  const [avatar, setAvatar] = useState(john);
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [saveMessage, setSaveMessage] = useState("");
-  const fileInputRef = useRef(null);
+  
+const [avatar, setAvatar] = useState(john);
+const [firstName, setFirstName] = useState("");
+const [email, setEmail] = useState("");
+const [address, setAddress] = useState("");
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const [saveMessage, setSaveMessage] = useState("");
+const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/profile", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+useEffect(() => {
+  fetch("https://task-management-app-backend-m5rk.onrender.com/profile", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      setFirstName(data.name);
+      setEmail(data.email);
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setFirstName(data.name);
-        setEmail(data.email);
-      })
-      .catch(() => {});
-  }, []);
+    .catch(() => {});
+}, []);
 
   function handleAvatarChange(e) {
     const file = e.target.files?.[0];
@@ -255,41 +256,41 @@ function ProfileInfo() {
     reader.readAsDataURL(file);
   }
 
-  async function handleSave() {
-    if (password || confirmPassword) {
-      if (password !== confirmPassword) {
-        setSaveMessage("Passwords do not match.");
-        return;
-      }
+ async function handleSave() {
+  if (password || confirmPassword) {
+    if (password !== confirmPassword) {
+      setSaveMessage("Passwords do not match.");
+      return;
     }
+  }
 
-    await fetch("http://localhost:5000/profile", {
+  await fetch("https://task-management-app-backend-m5rk.onrender.com/profile", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      name: firstName,
+      email: email,
+    }),
+  });
+
+  if (password) {
+    await fetch("https://task-management-app-backend-m5rk.onrender.com/password", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({
-        name: firstName,
-        email: email,
-      }),
+      body: JSON.stringify({ password }),
     });
-
-    if (password) {
-      await fetch("http://localhost:5000/profile/password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ password }),
-      });
-    }
-
-    setPassword("");
-    setConfirmPassword("");
-    setSaveMessage("Changes saved successfully!");
   }
+
+  setPassword("");
+  setConfirmPassword("");
+  setSaveMessage("Changes saved successfully!");
+}
 
   function handleDiscard() {
     setAvatar(initialData.avatar);
